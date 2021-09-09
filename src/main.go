@@ -1,17 +1,31 @@
 package main
 
 import (
-	"github.com/gofiber/fiber"
-)
+	"log"
 
-func index(c *fiber.Ctx) {
-	c.Send("Index View")
-}
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/mentoriacompartilhada/paulushcgcj-go-v0/src/controllers"
+)
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/", index)
+	app.Use(logger.New())
 
-	app.Listen(3000)
+	api := app.Group("/api")
+
+	api.Get("/hello", controllers.Hello)
+
+	pessoasApi := api.Group("/pessoas")
+
+	pessoasApi.Get("", controllers.ListPessoas)
+	pessoasApi.Post("", controllers.AddPessoa)
+
+	pessoasApi.Use("/:id", controllers.HasPessoa)
+	pessoasApi.Get("/:id", controllers.Getpessoa)
+	pessoasApi.Put("/:id", controllers.UpdatePessoa)
+	pessoasApi.Delete("/:id", controllers.DeletePessoa)
+
+	log.Fatal(app.Listen(":3000"))
 }

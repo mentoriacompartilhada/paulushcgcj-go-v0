@@ -19,7 +19,9 @@
 	"extensions": [
 		"golang.Go",
 		"premparihar.gotestexplorer",
-		"github.copilot"
+		"github.copilot",
+		"766b.go-outliner",
+		"msyrus.go-doc"
 	],
 
 	"forwardPorts": [3000],
@@ -35,6 +37,6 @@
 		"onAutoForward": "notify"
 	},
 	
-	// "postCreateCommand": "go version",	
+	"postCreateCommand": "go mod download",	
 	"remoteUser": "vscode"
 }
