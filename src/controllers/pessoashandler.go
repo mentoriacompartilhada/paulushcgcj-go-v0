@@ -9,12 +9,31 @@ import (
 	"github.com/mentoriacompartilhada/paulushcgcj-go-v0/src/services"
 )
 
+type Paginator struct {
+	Page string `query:"page"`
+	Size string `query:"size"`
+}
+
+func (p Paginator) PageInt() int {
+	value, _ := strconv.ParseInt(p.Page, 10, 32)
+	return int(value)
+}
+
+func (p Paginator) SizeInt() int {
+	value, _ := strconv.ParseInt(p.Size, 10, 32)
+	return int(value)
+}
+
 func ListPessoas(context *fiber.Ctx) error {
 
-	_page, _ := strconv.ParseInt(context.Query("page", "0"), 10, 32)
-	_size, _ := strconv.ParseInt(context.Query("size", "10"), 10, 32)
+	paginator := new(Paginator)
 
-	return context.JSON(services.ListPessoas(int(_page), int(_size)))
+	if err := context.QueryParser(paginator); err != nil {
+		context.SendStatus(500)
+		return context.SendString(err.Error())
+	}
+
+	return context.JSON(services.ListPessoas(paginator.PageInt(), paginator.SizeInt()))
 }
 
 func AddPessoa(context *fiber.Ctx) error {

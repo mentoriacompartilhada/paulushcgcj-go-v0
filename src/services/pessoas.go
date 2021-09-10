@@ -25,22 +25,37 @@ func ListPessoas(page int, size int) models.Page {
 
 func AddPessoa(pessoa models.Pessoa) int {
 	pessoa.Id = idGen
-	idGen++
+	idGen = idGen + 1
 	pessoasMap = append(pessoasMap, pessoa)
 	return pessoa.Id
 }
 
-func Getpessoa(pessoaId int) models.Pessoa {
-	return pessoasMap[pessoaId-1]
+func Getpessoa(pessoaId int) *models.Pessoa {
+	for _, pessoa := range pessoasMap {
+		if pessoa.Id == pessoaId {
+			return &pessoa
+		}
+	}
+	return nil
 }
 
 func UpdatePessoa(pessoaId int, pessoa models.Pessoa) {
 	pessoa.Id = pessoaId
-	pessoasMap[pessoaId-1] = pessoa
+	for _index, _pessoa := range pessoasMap {
+		if _pessoa.Id == pessoaId {
+			pessoasMap[_index] = pessoa
+		}
+	}
 }
 
 func DeletePessoa(pessoaId int) {
-	pessoasMap = append(pessoasMap[:pessoaId-1], pessoasMap[pessoaId:]...)
+	var _pessoasMap []models.Pessoa = []models.Pessoa{}
+	for _, pessoa := range pessoasMap {
+		if pessoa.Id != pessoaId {
+			pessoasMap = append(_pessoasMap, pessoa)
+		}
+	}
+	pessoasMap = _pessoasMap
 }
 
 func HasPessoa(pessoaId int) bool {
